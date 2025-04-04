@@ -42,9 +42,9 @@ type Reader2 struct {
 	r   io.Reader
 	err error
 
-	dict        *decoderDict
+	dict        *DecoderDict
 	ur          *uncompressedReader
-	decoder     *decoder
+	decoder     *Decoder
 	chunkReader io.Reader
 
 	cstate chunkState
@@ -61,7 +61,7 @@ func (c Reader2Config) NewReader2(lzma2 io.Reader) (r *Reader2, err error) {
 		return nil, err
 	}
 	r = &Reader2{r: lzma2, cstate: start}
-	r.dict, err = newDecoderDict(c.DictCap)
+	r.dict, err = NewDecoderDict(c.DictCap)
 	if err != nil {
 		return nil, err
 	}
@@ -109,8 +109,8 @@ func (r *Reader2) startChunk() error {
 	}
 	br := ByteReader(io.LimitReader(r.r, int64(header.compressed)+1))
 	if r.decoder == nil {
-		state := newState(header.props)
-		r.decoder, err = newDecoder(br, state, r.dict, size)
+		state := NewState(header.props)
+		r.decoder, err = NewDecoder(br, state, r.dict, size)
 		if err != nil {
 			return err
 		}
@@ -121,7 +121,7 @@ func (r *Reader2) startChunk() error {
 	case cLR:
 		r.decoder.State.Reset()
 	case cLRN, cLRND:
-		r.decoder.State = newState(header.props)
+		r.decoder.State = NewState(header.props)
 	}
 	err = r.decoder.Reopen(br, size)
 	if err != nil {
@@ -167,13 +167,13 @@ func (r *Reader2) EOS() bool {
 // uncompressedReader is used to read uncompressed chunks.
 type uncompressedReader struct {
 	lr   io.LimitedReader
-	Dict *decoderDict
+	Dict *DecoderDict
 	eof  bool
 	err  error
 }
 
 // newUncompressedReader initializes a new uncompressedReader.
-func newUncompressedReader(r io.Reader, dict *decoderDict, size int64) *uncompressedReader {
+func newUncompressedReader(r io.Reader, dict *DecoderDict, size int64) *uncompressedReader {
 	ur := &uncompressedReader{
 		lr:   io.LimitedReader{R: r, N: size},
 		Dict: dict,

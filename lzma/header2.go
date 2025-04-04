@@ -32,11 +32,11 @@ const (
 	cU
 	// LZMA compressed; no reset
 	cL
-	// LZMA compressed; reset state
+	// LZMA compressed; reset State
 	cLR
-	// LZMA compressed; reset state; new property value
+	// LZMA compressed; reset State; new property value
 	cLRN
-	// LZMA compressed; reset state; new property value; reset dictionary
+	// LZMA compressed; reset State; new property value; reset dictionary
 	cLRND
 )
 
@@ -257,23 +257,23 @@ func putUint16BE(p []byte, x uint16) {
 	p[1] = byte(x)
 }
 
-// chunkState is used to manage the state of the chunks
+// chunkState is used to manage the State of the chunks
 type chunkState byte
 
-// start and stop define the initial and terminating state of the chunk
-// state
+// start and stop define the initial and terminating State of the chunk
+// State
 const (
 	start chunkState = 'S'
 	stop  chunkState = 'T'
 )
 
-// errors for the chunk state handling
+// errors for the chunk State handling
 var (
 	errChunkType = errors.New("lzma: unexpected chunk type")
 	errState     = errors.New("lzma: wrong chunk state")
 )
 
-// next transitions state based on chunk type input
+// next transitions State based on chunk type input
 func (c *chunkState) next(ctype chunkType) error {
 	switch *c {
 	// start state
@@ -337,7 +337,7 @@ func (c *chunkState) next(ctype chunkType) error {
 	return nil
 }
 
-// defaultChunkType returns the default chunk type for each chunk state.
+// defaultChunkType returns the default chunk type for each chunk State.
 func (c chunkState) defaultChunkType() chunkType {
 	switch c {
 	case 'S':

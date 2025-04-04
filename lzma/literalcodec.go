@@ -5,7 +5,7 @@
 package lzma
 
 // literalCodec supports the encoding of literal. It provides 768 probability
-// values per literal state. The upper 512 probabilities are used with the
+// values per literal State. The upper 512 probabilities are used with the
 // context of a match bit.
 type literalCodec struct {
 	probs []prob

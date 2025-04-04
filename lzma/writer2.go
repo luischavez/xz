@@ -79,7 +79,7 @@ func (c *Writer2Config) Verify() error {
 type Writer2 struct {
 	w io.Writer
 
-	start   *state
+	start   *State
 	encoder *encoder
 
 	cstate chunkState
@@ -102,7 +102,7 @@ func (c Writer2Config) NewWriter2(lzma2 io.Writer) (w *Writer2, err error) {
 	}
 	w = &Writer2{
 		w:      lzma2,
-		start:  newState(*c.Properties),
+		start:  NewState(*c.Properties),
 		cstate: start,
 		ctype:  start.defaultChunkType(),
 	}

@@ -42,7 +42,7 @@ func (c *ReaderConfig) Verify() error {
 type Reader struct {
 	lzma io.Reader
 	h    header
-	d    *decoder
+	d    *Decoder
 }
 
 // NewReader creates a new reader for an LZMA stream using the classic
@@ -77,12 +77,12 @@ func (c ReaderConfig) NewReader(lzma io.Reader) (r *Reader, err error) {
 		dictCap = c.DictCap
 	}
 
-	state := newState(r.h.properties)
-	dict, err := newDecoderDict(dictCap)
+	state := NewState(r.h.properties)
+	dict, err := NewDecoderDict(dictCap)
 	if err != nil {
 		return nil, err
 	}
-	r.d, err = newDecoder(ByteReader(lzma), state, dict, r.h.size)
+	r.d, err = NewDecoder(ByteReader(lzma), state, dict, r.h.size)
 	if err != nil {
 		return nil, err
 	}

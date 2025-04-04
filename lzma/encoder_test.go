@@ -47,7 +47,7 @@ func cycle(t *testing.T, n int) {
 	if err := props.verify(); err != nil {
 		t.Fatalf("properties error %s", err)
 	}
-	state := newState(props)
+	state := NewState(props)
 	var buf bytes.Buffer
 	w, err := newEncoder(&buf, state, encoderDict, eosMarker)
 	if err != nil {
@@ -66,14 +66,14 @@ func cycle(t *testing.T, n int) {
 		t.Fatalf("w.Close error %s", err)
 	}
 	t.Logf("buf.Len() %d len(orig) %d", buf.Len(), len(orig))
-	decoderDict, err := newDecoderDict(dictCap)
+	decoderDict, err := NewDecoderDict(dictCap)
 	if err != nil {
-		t.Fatalf("newDecoderDict error %s", err)
+		t.Fatalf("NewDecoderDict error %s", err)
 	}
 	state.Reset()
-	r, err := newDecoder(&buf, state, decoderDict, -1)
+	r, err := NewDecoder(&buf, state, decoderDict, -1)
 	if err != nil {
-		t.Fatalf("newDecoder error %s", err)
+		t.Fatalf("NewDecoder error %s", err)
 	}
 	decoded, err := ioutil.ReadAll(r)
 	if err != nil {
@@ -112,7 +112,7 @@ func TestEncoderCycle2(t *testing.T) {
 	if err := props.verify(); err != nil {
 		t.Fatalf("properties error %s", err)
 	}
-	state := newState(props)
+	state := NewState(props)
 	lbw := &LimitedByteWriter{BW: buf, N: 100}
 	w, err := newEncoder(lbw, state, encoderDict, 0)
 	if err != nil {
@@ -127,12 +127,12 @@ func TestEncoderCycle2(t *testing.T) {
 	}
 	n := w.Compressed()
 	txt = txt[:n]
-	decoderDict, err := newDecoderDict(dictCap)
+	decoderDict, err := NewDecoderDict(dictCap)
 	if err != nil {
 		t.Fatalf("NewDecoderDict error %s", err)
 	}
 	state.Reset()
-	r, err := newDecoder(buf, state, decoderDict, n)
+	r, err := NewDecoder(buf, state, decoderDict, n)
 	if err != nil {
 		t.Fatalf("NewDecoder error %s", err)
 	}

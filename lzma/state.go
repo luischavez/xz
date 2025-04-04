@@ -4,12 +4,12 @@
 
 package lzma
 
-// states defines the overall state count
+// states defines the overall State count
 const states = 12
 
-// State maintains the full state of the operation encoding or decoding
+// State maintains the full State of the operation encoding or decoding
 // process.
-type state struct {
+type State struct {
 	rep         [4]uint32
 	isMatch     [states << maxPosBits]prob
 	isRepG0Long [states << maxPosBits]prob
@@ -34,9 +34,9 @@ func initProbSlice(p []prob) {
 }
 
 // Reset sets all state information to the original values.
-func (s *state) Reset() {
+func (s *State) Reset() {
 	p := s.Properties
-	*s = state{
+	*s = State{
 		Properties: p,
 		// dict:       s.dict,
 		posBitMask: (uint32(1) << uint(p.PB)) - 1,
@@ -53,15 +53,15 @@ func (s *state) Reset() {
 	s.distCodec.init()
 }
 
-// newState creates a new state from the give Properties.
-func newState(p Properties) *state {
-	s := &state{Properties: p}
+// NewState creates a new state from the give Properties.
+func NewState(p Properties) *State {
+	s := &State{Properties: p}
 	s.Reset()
 	return s
 }
 
 // deepcopy initializes s as a deep copy of the source.
-func (s *state) deepcopy(src *state) {
+func (s *State) deepcopy(src *State) {
 	if s == src {
 		return
 	}
@@ -81,15 +81,15 @@ func (s *state) deepcopy(src *state) {
 	s.Properties = src.Properties
 }
 
-// cloneState creates a new clone of the give state.
-func cloneState(src *state) *state {
-	s := new(state)
+// cloneState creates a new clone of the give State.
+func cloneState(src *State) *State {
+	s := new(State)
 	s.deepcopy(src)
 	return s
 }
 
-// updateStateLiteral updates the state for a literal.
-func (s *state) updateStateLiteral() {
+// updateStateLiteral updates the State for a literal.
+func (s *State) updateStateLiteral() {
 	switch {
 	case s.state < 4:
 		s.state = 0
@@ -101,8 +101,8 @@ func (s *state) updateStateLiteral() {
 	s.state -= 6
 }
 
-// updateStateMatch updates the state for a match.
-func (s *state) updateStateMatch() {
+// updateStateMatch updates the State for a match.
+func (s *State) updateStateMatch() {
 	if s.state < 7 {
 		s.state = 7
 	} else {
@@ -110,8 +110,8 @@ func (s *state) updateStateMatch() {
 	}
 }
 
-// updateStateRep updates the state for a repetition.
-func (s *state) updateStateRep() {
+// updateStateRep updates the State for a repetition.
+func (s *State) updateStateRep() {
 	if s.state < 7 {
 		s.state = 8
 	} else {
@@ -119,8 +119,8 @@ func (s *state) updateStateRep() {
 	}
 }
 
-// updateStateShortRep updates the state for a short repetition.
-func (s *state) updateStateShortRep() {
+// updateStateShortRep updates the State for a short repetition.
+func (s *State) updateStateShortRep() {
 	if s.state < 7 {
 		s.state = 9
 	} else {
@@ -129,15 +129,15 @@ func (s *state) updateStateShortRep() {
 }
 
 // states computes the states of the operation codec.
-func (s *state) states(dictHead int64) (state1, state2, posState uint32) {
+func (s *State) states(dictHead int64) (state1, state2, posState uint32) {
 	state1 = s.state
 	posState = uint32(dictHead) & s.posBitMask
 	state2 = (s.state << maxPosBits) | posState
 	return
 }
 
-// litState computes the literal state.
-func (s *state) litState(prev byte, dictHead int64) uint32 {
+// litState computes the literal State.
+func (s *State) litState(prev byte, dictHead int64) uint32 {
 	lp, lc := uint(s.Properties.LP), uint(s.Properties.LC)
 	litState := ((uint32(dictHead) & ((1 << lp) - 1)) << lc) |
 		(uint32(prev) >> (8 - lc))

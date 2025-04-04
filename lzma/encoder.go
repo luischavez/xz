@@ -36,7 +36,7 @@ const (
 // it into a byte writer.
 type encoder struct {
 	dict  *encoderDict
-	state *state
+	state *State
 	re    *rangeEncoder
 	start int64
 	// generate eos marker
@@ -49,7 +49,7 @@ type encoder struct {
 // limited use LimitedByteWriter provided by this package. The flags
 // argument supports the eosMarker flag, controlling whether a
 // terminating end-of-stream marker must be written.
-func newEncoder(bw io.ByteWriter, state *state, dict *encoderDict,
+func newEncoder(bw io.ByteWriter, state *State, dict *encoderDict,
 	flags encoderFlags) (e *encoder, err error) {
 
 	re, err := newRangeEncoder(bw)

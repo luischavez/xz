@@ -131,7 +131,7 @@ type rangeDecoder struct {
 	code   uint32
 }
 
-// newRangeDecoder initializes a range decoder. It reads five bytes from the
+// newRangeDecoder initializes a range Decoder. It reads five bytes from the
 // reader and therefore may return an error.
 func newRangeDecoder(br io.ByteReader) (d *rangeDecoder, err error) {
 	d = &rangeDecoder{br: br, nrange: 0xffffffff}
@@ -157,7 +157,7 @@ func newRangeDecoder(br io.ByteReader) (d *rangeDecoder, err error) {
 	return d, nil
 }
 
-// possiblyAtEnd checks whether the decoder may be at the end of the stream.
+// possiblyAtEnd checks whether the Decoder may be at the end of the stream.
 func (d *rangeDecoder) possiblyAtEnd() bool {
 	return d.code == 0
 }

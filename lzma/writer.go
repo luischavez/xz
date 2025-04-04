@@ -130,7 +130,7 @@ func (c WriterConfig) NewWriter(lzma io.Writer) (w *Writer, err error) {
 		w.buf = bufio.NewWriter(lzma)
 		w.bw = w.buf
 	}
-	state := newState(w.h.properties)
+	state := NewState(w.h.properties)
 	m, err := c.Matcher.new(w.h.dictCap)
 	if err != nil {
 		return nil, err
