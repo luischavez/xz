@@ -5,6 +5,9 @@
 package lzma
 
 import (
+	"bufio"
+	"bytes"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"io"
@@ -47,6 +50,29 @@ func NewDecoder(br io.ByteReader, state *State, dict *DecoderDict, size int64) (
 		start: dict.pos(),
 	}
 	return d, nil
+}
+
+func DecodeRaw(data []byte, size int64, headerLength int) (result []byte, err error) {
+	props, err := PropertiesForCode(data[0])
+	dictSize := binary.LittleEndian.Uint32(data[1:5])
+	if err != nil {
+		return nil, err
+	}
+	state := NewState(props)
+	dict, err := NewDecoderDict(int(dictSize))
+	if err != nil {
+		return nil, err
+	}
+	br := bufio.NewReader(bytes.NewBuffer(data[headerLength:]))
+	reader, err := NewDecoder(br, state, dict, size)
+	if err != nil {
+		return nil, err
+	}
+	result, err = io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 // Reopen restarts the decoder with a new byte reader and a new size. Reopen

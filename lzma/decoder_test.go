@@ -57,3 +57,24 @@ func TestDecoder(t *testing.T) {
 		}
 	}
 }
+
+func TestDecoderRar(t *testing.T) {
+	filename := "fox.lzma"
+	want := "The quick brown fox jumps over the lazy dog.\n"
+	f, err := os.Open(filename)
+	if err != nil {
+		t.Fatalf("os.Open(%q) error %s", filename, err)
+	}
+	data, err := io.ReadAll(f)
+	if err != nil {
+		t.Fatalf("io.ReadAll error %s", err)
+	}
+	size := int64(len(want))
+	decoded, err := DecodeRaw(data, size, 13)
+	if err != nil {
+		t.Fatalf("DecodeRaw error %s", err)
+	}
+	if got := string(decoded); got != want {
+		t.Fatalf("read %q; but want %q", got, want)
+	}
+}
