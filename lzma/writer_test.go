@@ -14,7 +14,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ulikunitz/xz/internal/randtxt"
+	"github.com/luischavez/xz/internal/randtxt"
 )
 
 func TestWriterCycle(t *testing.T) {

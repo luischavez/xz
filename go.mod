@@ -1,3 +1,3 @@
-module github.com/ulikunitz/xz
+module github.com/luischavez/xz
 
 go 1.12

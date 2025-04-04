@@ -13,7 +13,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ulikunitz/xz"
+	"github.com/luischavez/xz"
 )
 
 func main() {
